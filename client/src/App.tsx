@@ -8,24 +8,6 @@ type Page = 'splash' | 'login' | 'lobby' | 'game'
 
 interface AppState { page: Page }
 
-function enterImmersiveLandscape() {
-    const root = document.documentElement as any
-    const requestFullscreen = root.requestFullscreen || root.webkitRequestFullscreen
-    let fullscreenRequest: Promise<any> | undefined
-    if (requestFullscreen && !document.fullscreenElement) {
-        try { fullscreenRequest = Promise.resolve(requestFullscreen.call(root)) } catch (e) { fullscreenRequest = undefined }
-    }
-
-    const orientation = (window.screen as any).orientation
-    const lockLandscape = () => {
-        if (orientation && orientation.lock) {
-            try { Promise.resolve(orientation.lock('landscape')).catch(() => undefined) } catch (e) { /* Browser does not allow orientation lock here. */ }
-        }
-    }
-    lockLandscape()
-    if (fullscreenRequest) fullscreenRequest.then(lockLandscape).catch(() => undefined)
-}
-
 class App extends React.Component<{}, AppState> {
     private splashTimer: number | undefined
 
@@ -37,19 +19,13 @@ class App extends React.Component<{}, AppState> {
     }
 
     componentDidMount() {
-        window.addEventListener('pointerdown', this.onFirstTouch, {once: true, capture: true})
         this.splashTimer = window.setTimeout(() => {
             this.setState({page: localStorage.getItem('token') ? 'lobby' : 'login'})
         }, 1500)
     }
 
     componentWillUnmount() {
-        window.removeEventListener('pointerdown', this.onFirstTouch, true)
         if (this.splashTimer) window.clearTimeout(this.splashTimer)
-    }
-
-    onFirstTouch = () => {
-        if (window.matchMedia('(pointer: coarse)').matches || window.innerWidth <= 900) enterImmersiveLandscape()
     }
 
     loadPlayerInfo() {
@@ -88,7 +64,7 @@ class App extends React.Component<{}, AppState> {
             default:
                 pageView = <div className="app-shell"><Game onLogout={() => this.setState({page: 'lobby'})}/></div>
         }
-        return <div className="app-root">{pageView}<div className="rotation-guide"><div className="rotation-emblem">↻</div><p className="rotation-eyebrow">LANDSCAPE MODE</p><h2>请横屏进入牌室</h2><p>转动手机横向握持，画面将铺满整个屏幕。</p><button onClick={enterImmersiveLandscape}>开启横屏 · 全屏体验</button><small>若浏览器未自动旋转，请打开手机的自动旋转；添加到主屏幕后可全屏启动。</small></div></div>
+        return <div className="app-root">{pageView}</div>
     }
 }
 

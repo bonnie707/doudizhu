@@ -17,7 +17,7 @@
   "start_url": "/",
   "scope": "/",
   "display": "fullscreen",
-  "orientation": "landscape",
+  "orientation": "portrait",
   "theme_color": "#0b2823",
   "background_color": "#0b2823"
 }

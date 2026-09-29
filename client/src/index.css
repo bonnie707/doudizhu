@@ -7,9 +7,3 @@ button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .app-shell { position: relative; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background: #142f2a; }
 .game-shell { position: relative; }
 .rotate-notice { display: none; }
-@media (max-width: 768px) and (orientation: portrait) {
-  .rotate-notice { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(10,24,34,.96); color: white; text-align: center; }
-  .rotate-notice div { display: grid; gap: 12px; }
-  .rotate-notice strong { font-size: 1.5rem; }
-  .rotate-notice span { color: #c8d5df; }
-}
