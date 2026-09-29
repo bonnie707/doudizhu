@@ -51,7 +51,10 @@ class RestfulHandler(RequestHandler, AlchemyMixin):
         self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.set_header('Access-Control-Allow-Headers', 'X-PINGOTHER, Content-Type')
-        self.set_header('Access-Control-Allow-Credentials', 'true')
+
+    def options(self):
+        self.set_status(204)
+        self.finish()
 
     def get_json_data(self) -> Dict[str, Any]:
         json_data: Dict[str, Any] = orjson.loads(self.request.body)

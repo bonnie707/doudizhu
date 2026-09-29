@@ -50,10 +50,10 @@ class App extends React.Component<{}, AppState> {
     render() {
         switch (this.state.page) {
             case 'game':
-                return <Game onLogout={() => this.onLogout()}/>
+                return <div className="app-shell"><Game onLogout={() => this.onLogout()}/></div>
             case 'login':
             default:
-                return <Login onLogin={playerInfo => this.onLogin(playerInfo)}/>
+                return <div className="app-shell"><Login onLogin={playerInfo => this.onLogin(playerInfo)}/></div>
         }
     }
 }

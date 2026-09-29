@@ -48,10 +48,15 @@ class Game extends React.Component<GameProps> {
 
     render() {
         return (
-            <div
-                ref={this.containerRef}
-                style={{margin: 'auto', width: '100%', height: '100%'}}
-            />
+            <div className="game-shell">
+                <div ref={this.containerRef} className="game-container" />
+                <div className="rotate-notice" role="status">
+                    <div>
+                        <strong>请横屏体验</strong>
+                        <span>旋转手机，让牌桌完整显示</span>
+                    </div>
+                </div>
+            </div>
         )
     }
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import './Login.css'
+import {getApiUrl} from '../game/server'
 
 interface LoginProps {
     onLogin: (playerInfo: any) => void
@@ -56,7 +57,7 @@ class Login extends React.Component<LoginProps, LoginState> {
             return
         }
         this.setState({loading: true, error: ''})
-        post('/login', {name})
+        post(getApiUrl('/login'), {name})
             .then(response => {
                 // 持久化登录态
                 localStorage.setItem('token', response.token || '')

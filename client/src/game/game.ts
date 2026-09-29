@@ -3,6 +3,7 @@ import {Poker} from './poker'
 import {Rule} from './rule'
 import {Protocol, Socket} from './net'
 import {createPlay} from './player'
+import {getWebSocketUrl} from './server'
 
 // 简单的观察者, 用于 UI 与状态解耦 (房间信息/倒计时/准备/抢地主)
 class Observer {
@@ -69,11 +70,8 @@ class GameScene extends Phaser.Scene {
         this.players = [createPlay(0, this), createPlay(1, this), createPlay(2, this)]
         this.players[0].updateInfo(window.playerInfo.uid, window.playerInfo.name)
 
-        const protocol = window.location.protocol.startsWith('https') ? 'wss://' : 'ws://'
         const token = localStorage.getItem('token') || ''
-        // 开发环境: 直接连接游戏服务器(8080), 不走 CRA proxy
-        const wsHost = process.env.NODE_ENV === 'development' ? 'localhost:8080' : window.location.host
-        const wsUrl = protocol + wsHost + '/ws?token=' + encodeURIComponent(token)
+        const wsUrl = getWebSocketUrl('/ws?token=' + encodeURIComponent(token))
         console.log('WebSocket URL:', wsUrl)
         console.log('Token:', token ? 'exists' : 'missing')
         this.socket = new Socket(wsUrl)
@@ -140,9 +138,8 @@ class GameScene extends Phaser.Scene {
 
     onerror() {
         console.log('socket onerror, try reconnect.')
-        const protocol = window.location.protocol.startsWith('https') ? 'wss://' : 'ws://'
         const token = localStorage.getItem('token') || ''
-        this.socket = new Socket(protocol + window.location.host + '/ws?token=' + encodeURIComponent(token))
+        this.socket = new Socket(getWebSocketUrl('/ws?token=' + encodeURIComponent(token)))
         this.socket.connect(this.onopen.bind(this), this.onmessage.bind(this), this.onerror.bind(this))
     }
 
