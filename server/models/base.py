@@ -1,3 +1,6 @@
+import os
+import ssl
+
 from sqlalchemy.dialects.mysql import Insert
 from sqlalchemy.engine import Result, ScalarResult, CursorResult
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
@@ -9,7 +12,13 @@ __all__ = ('AlchemyMixin', 'Base')
 from config import DATABASE_URI
 
 Base = declarative_base()
-engine = create_async_engine(DATABASE_URI, echo=True)
+database_ca = os.getenv('DATABASE_CA')
+engine_options = {'echo': True}
+if database_ca:
+    engine_options['connect_args'] = {
+        'ssl': ssl.create_default_context(cadata=database_ca),
+    }
+engine = create_async_engine(DATABASE_URI, **engine_options)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 

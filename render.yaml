@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: doudizhu-demo
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install -r requirements.txt
+    startCommand: cd server && python initialize_database.py && python app.py
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URI
+        sync: false
+      - key: DATABASE_CA
+        sync: false
