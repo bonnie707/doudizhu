@@ -2,7 +2,7 @@ import os
 import ssl
 
 from sqlalchemy.dialects.mysql import Insert
-from sqlalchemy.engine import Result, ScalarResult, CursorResult
+from sqlalchemy.engine import Result, ScalarResult, CursorResult, make_url
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.sql import Select
@@ -18,7 +18,13 @@ if database_ca:
     engine_options['connect_args'] = {
         'ssl': ssl.create_default_context(cadata=database_ca),
     }
-engine = create_async_engine(DATABASE_URI, **engine_options)
+
+# Aiven's connection URI includes ``ssl-mode=REQUIRED``. TLS is already
+# configured above with Aiven's CA certificate; aiomysql does not accept the
+# URI query parameter as a connection keyword, so remove it before creating
+# the SQLAlchemy engine.
+database_url = make_url(DATABASE_URI).difference_update_query(['ssl-mode'])
+engine = create_async_engine(database_url, **engine_options)
 async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
