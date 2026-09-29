@@ -10,3 +10,8 @@ declare interface PlayerInfo {
 declare interface Window {
   playerInfo?: PlayerInfo
 }
+
+declare module '*.webp' {
+  const imageUrl: string
+  export default imageUrl
+}
