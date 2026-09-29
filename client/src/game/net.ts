@@ -76,6 +76,12 @@ export class Socket {
         prettyLog('REQ', packet)
         this.websocket.send(JSON.stringify(packet))
     }
+
+    close() {
+        const connection = this.websocket
+        this.websocket = null
+        if (connection && connection.readyState < WebSocket.CLOSING) connection.close()
+    }
 }
 
 export default Socket

@@ -61,6 +61,7 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+        this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.shutdown, this)
         Rule.RuleList = this.cache.json.get('rule')
         this.cameras.main.setBackgroundColor('#182d3b')
 
@@ -213,9 +214,16 @@ class GameScene extends Phaser.Scene {
                 })
                 this.whoseTurn = this.uidToSeat(winner)
                 const gameOver = () => {
-                    alert(this.players[this.whoseTurn].isLandlord ? '地主赢' : '农民赢')
                     observer.set('ready', false)
                     this.cleanWorld()
+                    const currentPlayer = packet.players.find((player: any) => player.uid === window.playerInfo?.uid)
+                    this.game.events.emit('ddz-game-over', {
+                        won: winner === window.playerInfo?.uid,
+                        point: currentPlayer ? currentPlayer.point : 0,
+                        multiple: Object.keys(packet.multiple || {}).reduce((total: number, key: string) => total * Number(packet.multiple[key] || 1), 1),
+                        spring: packet.spring,
+                        antispring: packet.antispring,
+                    })
                 }
                 this.time.delayedCall(2000, gameOver, [], this)
                 break
@@ -229,6 +237,10 @@ class GameScene extends Phaser.Scene {
             default:
                 console.log('UNKNOWN PACKET:', message)
         }
+    }
+
+    shutdown() {
+        if (this.socket) this.socket.close()
     }
 
     uidToSeat(uid) {

@@ -79,29 +79,33 @@ class Login extends React.Component<LoginProps, LoginState> {
     render() {
         const {name, error, loading} = this.state
         return (
-            <div className="content">
-                <div className="login-head">斗地主 · 登录</div>
-                <form onSubmit={this.handleSubmit}>
+            <div className="content login-card">
+                <div className="login-emblem">牌</div>
+                <p className="login-eyebrow">YOUR TABLE IS READY</p>
+                <h1 className="login-head">欢迎来到牌友会</h1>
+                <p className="login-subtitle">输入一个昵称，立刻加入牌局。</p>
+                <form className="login-form" onSubmit={this.handleSubmit}>
+                    <label htmlFor="guest-name">你的牌桌昵称</label>
                     <input
+                        id="guest-name"
                         type="text"
                         name="name"
                         value={name}
                         onChange={this.handleChange}
-                        placeholder="请输入用户名"
+                        placeholder="例如：小明"
                         disabled={loading}
                         required
                         autoFocus
                     />
-                    {error && (
-                        <div style={{color: '#f00', marginBottom: 10}}>{error}</div>
-                    )}
+                    {error && <div className="login-error" role="alert">{error}</div>}
                     <input
                         type="submit"
                         className="submit"
-                        value={loading ? '登录中...' : '登录'}
+                        value={loading ? '正在进入…' : '游客登录 · 进入大厅'}
                         disabled={loading}
                     />
                 </form>
+                <p className="guest-note">游客模式 · 无需注册，昵称仅用于牌桌显示</p>
             </div>
         )
     }

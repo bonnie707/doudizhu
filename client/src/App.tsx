@@ -1,46 +1,46 @@
 import React from 'react'
 import Login from './components/Login'
+import Lobby from './components/Lobby'
 import Game from './game/Index'
+import './flow.css'
 
+type Page = 'splash' | 'login' | 'lobby' | 'game'
 
-// 顶层路由:
-// - 有 token -> 游戏
-// - 无 token -> 登录
-// 登录成功后 Login.js 会写入 localStorage 并调用 onLogin -> setState 切到游戏
-interface AppState {
-    page: 'login' | 'game'
-}
+interface AppState { page: Page }
 
 class App extends React.Component<{}, AppState> {
+    private splashTimer: number | undefined
 
     constructor(props: {}) {
         super(props)
-        const token = localStorage.getItem('token')
         const playerInfo = this.loadPlayerInfo()
-        // 把 playerInfo 暴露到 window, GameScene.create 会读取
-        if (playerInfo) {
-            window.playerInfo = playerInfo
-        }
-        this.state = {
-            page: token ? 'game' : 'login',
-        }
+        if (playerInfo) window.playerInfo = playerInfo
+        this.state = {page: 'splash'}
+    }
+
+    componentDidMount() {
+        this.splashTimer = window.setTimeout(() => {
+            this.setState({page: localStorage.getItem('token') ? 'lobby' : 'login'})
+        }, 1500)
+    }
+
+    componentWillUnmount() {
+        if (this.splashTimer) window.clearTimeout(this.splashTimer)
     }
 
     loadPlayerInfo() {
         try {
             const raw = localStorage.getItem('playerInfo')
             return raw ? JSON.parse(raw) : null
-        } catch (e) {
-            return null
-        }
+        } catch (e) { return null }
     }
 
-    onLogin(playerInfo) {
+    onLogin = (playerInfo: any) => {
         window.playerInfo = playerInfo
-        this.setState({page: 'game'})
+        this.setState({page: 'lobby'})
     }
 
-    onLogout() {
+    onLogout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('playerInfo')
         delete window.playerInfo
@@ -48,12 +48,17 @@ class App extends React.Component<{}, AppState> {
     }
 
     render() {
+        const playerInfo = this.loadPlayerInfo() || window.playerInfo
         switch (this.state.page) {
-            case 'game':
-                return <div className="app-shell"><Game onLogout={() => this.onLogout()}/></div>
+            case 'splash':
+                return <main className="flow-screen splash-screen"><div className="brand-mark">牌</div><p className="eyebrow">CARD TABLE · ONLINE</p><h1>牌友会</h1><p className="splash-copy">好牌开局，轻松一刻</p><div className="loading-dots"><i/><i/><i/></div></main>
             case 'login':
+                return <main className="flow-screen"><Login onLogin={this.onLogin}/></main>
+            case 'lobby':
+                return <main className="flow-screen"><Lobby playerInfo={playerInfo} onStart={() => this.setState({page: 'game'})} onLogout={this.onLogout}/></main>
+            case 'game':
             default:
-                return <div className="app-shell"><Login onLogin={playerInfo => this.onLogin(playerInfo)}/></div>
+                return <div className="app-shell"><Game onLogout={() => this.setState({page: 'lobby'})}/></div>
         }
     }
 }
