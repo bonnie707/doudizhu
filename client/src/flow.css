@@ -13,7 +13,7 @@
 
 /* Full-bleed, landscape game hall */
 .lobby-flow { display: block; padding: 0; overflow: hidden; background: #0b2823; }
-.lobby-page { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: clamp(7px,1.7vh,18px); width: 100%; height: 100%; min-height: 0; margin: 0; padding: max(12px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left)); overflow: hidden; color: #f4edcf; background: linear-gradient(90deg,rgba(4,23,20,.75),rgba(5,29,24,.38) 54%,rgba(4,21,18,.62)),linear-gradient(0deg,rgba(5,22,19,.7),transparent 44%,rgba(4,21,18,.35)),url('/lobby-bg.jpg') center 55% / cover no-repeat; }
+.lobby-page { position: relative; isolation: isolate; display: flex; flex-direction: column; gap: clamp(7px,1.7vh,18px); width: 100%; height: 100%; min-height: 0; margin: 0; padding: max(12px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left)); overflow: hidden; color: #f4edcf; background: linear-gradient(90deg,rgba(4,23,20,.75),rgba(5,29,24,.38) 54%,rgba(4,21,18,.62)),linear-gradient(0deg,rgba(5,22,19,.7),transparent 44%,rgba(4,21,18,.35)),url('./assets/lobby-bg.jpg') center 55% / cover no-repeat; }
 .lobby-page::after { position: absolute; z-index: -1; inset: 7px; border: 1px solid rgba(212,180,99,.23); border-radius: 19px; content: ''; pointer-events: none; }
 .lobby-topbar { position: relative; z-index: 1; display: flex; flex: 0 0 clamp(40px,8vh,58px); align-items: center; justify-content: space-between; gap: 12px; }
 .lobby-brand { display: flex; align-items: center; gap: 9px; min-width: 135px; }
